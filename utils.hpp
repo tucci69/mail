@@ -6,9 +6,9 @@
 
 namespace utils
 {
-//Encodes a string to base64
+// Encodes a string to base64
 char* Base64Encode(const char*);
-//Decodes a string to base64
+// Decodes a string to base64
 char* Base64Decode(const char*);
 }
 
