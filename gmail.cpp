@@ -3,8 +3,8 @@
 
 int main()
 {
-    asio::io_service io_service; 
+    boost::asio::io_service io_service; 
 
-    Mail mail(io_service, "mail.google.com", "https");
+    Mail mail(io_service, "maps.google.com", "https");
     io_service.run();
 }
