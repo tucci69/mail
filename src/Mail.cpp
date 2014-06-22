@@ -13,7 +13,7 @@ using namespace std;
 
 namespace
 {
-    double  print_time(const string str, double x)
+    double  print_time(const string str, double x=0)
     {
         struct timeval tv={0};
         gettimeofday(&tv,NULL);
@@ -51,8 +51,8 @@ async_connect(error_code ec, resolver::iterator iterator)
 
     m_context.set_default_verify_paths();
 //    m_socket.set_verify_mode(asio::ssl::verify_peer);
-    m_socket.set_verify_mode(boost::asio::ssl::verify_none);
-    m_socket.set_verify_callback(boost::asio::ssl::rfc2818_verification(m_host)); 
+    m_socket.set_verify_mode(asio::ssl::verify_none);
+    m_socket.set_verify_callback(asio::ssl::rfc2818_verification(m_host)); 
 
 
     auto on_handshake = [this](const error_code& ec)
@@ -75,11 +75,11 @@ async_connect(error_code ec, resolver::iterator iterator)
             return;
         }
        print_time("*** Connect                  ***");
-       m_socket.async_handshake(boost::asio::ssl::stream_base::client, on_handshake);
+       m_socket.async_handshake(asio::ssl::stream_base::client, on_handshake);
     };
 
 
-    boost::asio::async_connect(m_socket.lowest_layer(), iterator, on_connect);
+    asio::async_connect(m_socket.lowest_layer(), iterator, on_connect);
             
     //    m_timer.expires_from_now(chrono::seconds(2),ec);
     //    m_timer.async_wait(bind(&Mail::async_connect, this, _1, m_iterator));
@@ -112,7 +112,7 @@ async_write()
     };
 
     print_time("*** Start request send time  ***");
-    boost::asio::async_write(m_socket, m_request, on_write);
+    asio::async_write(m_socket, m_request, on_write);
 }
 
 void Mail::
@@ -120,7 +120,7 @@ async_read()
 {
     auto on_read = [this](const error_code& ec, size_t bytes)
     {
-        if(ec == boost::asio::error::eof)
+        if(ec == asio::error::eof)
         {
             return;
         }
@@ -133,7 +133,7 @@ async_read()
         async_read();
     };
 
-    boost::asio::async_read(m_socket,
-            m_response, boost::asio::transfer_at_least(1),on_read);
+    asio::async_read(m_socket,
+            m_response, asio::transfer_at_least(1),on_read);
 }
 
