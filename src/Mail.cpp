@@ -13,13 +13,11 @@ using namespace std;
 
 namespace
 {
-    double  print_time(const string str, double x=0)
+    double get_time()
     {
         struct timeval tv={0};
         gettimeofday(&tv,NULL);
-        double time = tv.tv_sec + tv.tv_usec / 1000000.0;
-        cout << str << "\t\t\t" << fixed << time << endl;
-        return time;
+        return tv.tv_sec + tv.tv_usec / 1000000.0;
     }              
 }
 
@@ -38,7 +36,7 @@ async_connect(error_code ec, resolver::iterator iterator)
 
     if( m_iterator == resolver::iterator() )
     {
-        print_time("*** Start                    ***");
+        m_time.push_back(make_pair("*** Start                    ***",get_time()));
         resolver::query q(m_host, m_service);
         m_resolver.async_resolve(q,bind(&Mail::async_connect, this, _1, _2));
         return;
@@ -47,7 +45,7 @@ async_connect(error_code ec, resolver::iterator iterator)
     for(tcp::resolver::iterator iter = m_iterator, end; iter != end; ++iter)
         std::cout << tcp::endpoint(*iter) << std::endl;
 
-    print_time("*** DNSTime                  ***");
+    m_time.push_back(make_pair("*** DNSTime                  ***",get_time()));
 
     m_context.set_default_verify_paths();
 //    m_socket.set_verify_mode(asio::ssl::verify_peer);
@@ -62,7 +60,7 @@ async_connect(error_code ec, resolver::iterator iterator)
             LOG_ERR(ec << " " << ec.message());
             return;
         }
-        print_time("*** SSL connect time         ***");
+        m_time.push_back(make_pair("*** SSL connect time         ***",get_time()));
         async_write();
     };
 
@@ -74,16 +72,13 @@ async_connect(error_code ec, resolver::iterator iterator)
             LOG_ERR(ec << " " << ec.message());
             return;
         }
-       print_time("*** Connect                  ***");
+       m_time.push_back(make_pair("*** Connect                  ***",get_time()));
        m_socket.async_handshake(asio::ssl::stream_base::client, on_handshake);
     };
 
 
     asio::async_connect(m_socket.lowest_layer(), iterator, on_connect);
             
-    //    m_timer.expires_from_now(chrono::seconds(2),ec);
-    //    m_timer.async_wait(bind(&Mail::async_connect, this, _1, m_iterator));
-    //    m_timer.cancel();
 }
 
 void Mail::
@@ -105,13 +100,13 @@ async_write()
             return;
         }
         
-        print_time("*** Request sent time        ***");
+        m_time.push_back(make_pair("*** Request sent time        ***",get_time()));
 
 
         async_read();
     };
 
-    print_time("*** Start request send time  ***");
+    m_time.push_back(make_pair("*** Start request send time  ***",get_time()));
     asio::async_write(m_socket, m_request, on_write);
 }
 
@@ -122,6 +117,7 @@ async_read()
     {
         if(ec == asio::error::eof)
         {
+            m_time.push_back(make_pair("*** Finish read              ***",get_time()));
             return;
         }
         else if (ec)
@@ -129,6 +125,7 @@ async_read()
              LOG_ERR(ec << " " << ec.message());
            return;
         }
+        m_time.push_back(make_pair("*** Read                     ***",get_time()));
         cout << &m_response;
         async_read();
     };

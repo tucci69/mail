@@ -54,6 +54,7 @@ public:
        async_connect();
     }
     ~Mail(){ LOG_INFO("Destructor");}
+    std::list<std::pair<std::string,double>>    m_time;
 };
 
 #endif // __MAIL_HPP__
