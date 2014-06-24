@@ -8,12 +8,14 @@ int main()
 {
     asio::io_service io_service; 
 
-    Mail mail(io_service, "maps.google.com", "https");
+    Mail mail(io_service, "dealerportal.autotrader.co.uk", "https");
     io_service.run();
+    double tm_start = mail.m_time.begin()->second;
     for_each(mail.m_time.begin(),mail.m_time.end(),
-            [](pair<std::string,double>& elem)
+            [&tm_start](pair<std::string,double>& elem)
             {
-                cout << fixed << elem.first << " : " << elem.second << endl;
+                cout << fixed << elem.first << " : " << elem.second <<
+                    " : " << (int)round(100 * (elem.second - tm_start)) << endl;
             }
     );
 }

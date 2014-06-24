@@ -85,7 +85,7 @@ void Mail::
 async_write()
 {
     ostream os(&m_request);
-    string url = "/maps/place/London+SW20+0QW/@51.411424,-0.233385,3a,75y,76.82h,90t/data=!3m4!1e1!3m2!1s1DpRlfu2gkdAH8Ywjteo-g!2e0!4m2!3m1!1s0x487609207b9bcf7b:0xb9da41bb92006e88";
+    string url = "/";
     os << "GET " << url << " HTTP/1.1\r\n";
     os << "User-Agent: curl/7.36.0\r\n";
     os << "Host: " <<  m_host << "\r\n";

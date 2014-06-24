@@ -1,5 +1,5 @@
 project(mail)
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 2.6)
 
 set(ASIO_HPP /usr/local/asio/1.10.2/include)
 include_directories(${ASIO_HPP})
