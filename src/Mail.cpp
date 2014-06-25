@@ -11,15 +11,12 @@
 
 using namespace std;
 
-namespace
-{
     double get_time()
     {
         struct timeval tv={0};
         gettimeofday(&tv,NULL);
         return tv.tv_sec + tv.tv_usec / 1000000.0;
     }              
-}
 
 
 
@@ -72,8 +69,9 @@ async_connect(error_code ec, resolver::iterator iterator)
             LOG_ERR(ec << " " << ec.message());
             return;
         }
-       m_time.push_back(make_pair("*** Connect                  ***",get_time()));
-       m_socket.async_handshake(asio::ssl::stream_base::client, on_handshake);
+        m_time.push_back(make_pair("*** Connect                  ***",get_time()));
+//       m_socket.async_handshake(asio::ssl::stream_base::client, on_handshake);
+        async_write();
     };
 
 
@@ -85,7 +83,7 @@ void Mail::
 async_write()
 {
     ostream os(&m_request);
-    string url = "/";
+    string url = "/SiteOptimiser/image-200KB.bmp?id=1";
     os << "GET " << url << " HTTP/1.1\r\n";
     os << "User-Agent: curl/7.36.0\r\n";
     os << "Host: " <<  m_host << "\r\n";

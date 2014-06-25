@@ -15,6 +15,8 @@
 
 using namespace std::placeholders;
 
+double get_time();
+
 class Mail
 {   
     typedef asio::ip::tcp tcp;

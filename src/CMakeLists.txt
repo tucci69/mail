@@ -10,3 +10,5 @@ set_target_properties(mail
     LINK_FLAGS ${LINK_FLAGS}
 )
 
+add_executable(dns dns.cpp)
+
