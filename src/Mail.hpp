@@ -2,7 +2,6 @@
 #define __MAIL_HPP__
 
 #include <asio.hpp>
-#include <asio/ssl.hpp>
 #include <iostream>
 #include <ostream>
 #include <list>
@@ -22,16 +21,14 @@ class Mail
     typedef asio::ip::tcp tcp;
     typedef asio::error_code error_code;
     typedef tcp::resolver resolver;
-    typedef asio::ssl::stream<tcp::socket> ssl_socket;
 
-    asio::io_service&               m_ios;
-    resolver                        m_resolver;
-    resolver::iterator              m_iterator;
-    asio::ssl::context              m_context;
-    asio::ssl::stream<tcp::socket>  m_socket;
-    std::string                     m_host;
-    std::string                     m_service;
-    double                          m_start;
+    asio::io_service&   m_ios;
+    resolver            m_resolver;
+    resolver::iterator  m_iterator;
+    tcp::socket         m_socket;
+    std::string         m_host;
+    std::string         m_service;
+    double              m_start;
 
     asio::streambuf          m_request;
     asio::streambuf          m_response;
@@ -47,8 +44,7 @@ public:
             m_ios(ios),
             m_resolver(ios),
             m_iterator(resolver::iterator()),
-            m_context(asio::ssl::context::sslv23),
-            m_socket(ios, m_context),
+            m_socket(ios),
             m_host(host),
             m_service(service),
             m_start(0.0)

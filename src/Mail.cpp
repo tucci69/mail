@@ -39,29 +39,12 @@ async_connect(error_code ec, resolver::iterator iterator)
         return;
     }
 
-    for(tcp::resolver::iterator iter = m_iterator, end; iter != end; ++iter)
-        std::cout << tcp::endpoint(*iter) << std::endl;
+//    for(tcp::resolver::iterator iter = m_iterator, end; iter != end; ++iter)
+//        std::cout << tcp::endpoint(*iter) << std::endl;
 
     m_time.push_back(make_pair("*** DNSTime                  ***",get_time()));
 
-    m_context.set_default_verify_paths();
-//    m_socket.set_verify_mode(asio::ssl::verify_peer);
-    m_socket.set_verify_mode(asio::ssl::verify_none);
-    m_socket.set_verify_callback(asio::ssl::rfc2818_verification(m_host)); 
-
-
-    auto on_handshake = [this](const error_code& ec)
-    {
-        if(ec)
-        {
-            LOG_ERR(ec << " " << ec.message());
-            return;
-        }
-        m_time.push_back(make_pair("*** SSL connect time         ***",get_time()));
-        async_write();
-    };
-
-    auto on_connect = [this, on_handshake]
+    auto on_connect = [this]
         (const error_code& ec, resolver::iterator iterator)
     {
         if(ec)
@@ -70,7 +53,6 @@ async_connect(error_code ec, resolver::iterator iterator)
             return;
         }
         m_time.push_back(make_pair("*** Connect                  ***",get_time()));
-//       m_socket.async_handshake(asio::ssl::stream_base::client, on_handshake);
         async_write();
     };
 
@@ -83,7 +65,7 @@ void Mail::
 async_write()
 {
     ostream os(&m_request);
-    string url = "/SiteOptimiser/image-200KB.bmp?id=1";
+    string url = "/";
     os << "GET " << url << " HTTP/1.1\r\n";
     os << "User-Agent: curl/7.36.0\r\n";
     os << "Host: " <<  m_host << "\r\n";
@@ -113,18 +95,13 @@ async_read()
 {
     auto on_read = [this](const error_code& ec, size_t bytes)
     {
-        if(ec == asio::error::eof)
-        {
-            m_time.push_back(make_pair("*** Finish read              ***",get_time()));
-            return;
-        }
-        else if (ec)
+        m_time.push_back(make_pair("*** Read                     ***",get_time()));
+        if (ec)
         {
              LOG_ERR(ec << " " << ec.message());
            return;
         }
-        m_time.push_back(make_pair("*** Read                     ***",get_time()));
-        cout << &m_response;
+//        cout << &m_response;
         async_read();
     };
 

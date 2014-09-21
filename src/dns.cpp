@@ -41,9 +41,9 @@ main(int argc, char **argv)
     char host[] ="82.165.27.2";
 
     char sbuf[] =
-        "GET /SiteOptimiser/image-200KB.bmp?id=1 HTTP/1.1\r\n"
+        "GET / HTTP/1.1\r\n"
         "User-Agent: curl/7.36.0\r\n"
-        "Host: 82.165.27.2\r\n"
+        "Host: www.google.com\r\n"
         "Accept: */*\r\n"
         "Connection: close\r\n\r\n";
  
@@ -97,12 +97,7 @@ main(int argc, char **argv)
 
     while(recv(sockfd,rbuf,4096,0))
     {
-        if(first_byte)
-        {
-            tm_probe("Start");
-            first_byte=false;
-        }
-        //printf("%s",rbuf);
+        tm_probe("received");
     }
 
     tm_probe("Context");
@@ -112,7 +107,7 @@ main(int argc, char **argv)
             [&tm_start](const pair_type& elem)
             {
                 cout << fixed << elem.first << "\t" << ":" << "\t" <<
-                elem.second << "\t" << (int)round((elem.second - tm_start) * 1000) << endl;
+                elem.second << "\t" << 1000*(elem.second - tm_start) << endl;
             }
     );
 

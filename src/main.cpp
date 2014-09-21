@@ -8,16 +8,15 @@ int main()
 {
     asio::io_service io_service; 
 
-    Mail mail(io_service, "82.165.27.2", "https");
+    Mail mail(io_service, "www.google.com", "http");
     io_service.run();
-    mail.m_time.push_back(make_pair("*** Finish read              ***",get_time()));
 
     double tm_start = mail.m_time.begin()->second;
     for_each(mail.m_time.begin(),mail.m_time.end(),
             [&tm_start](pair<std::string,double>& elem)
             {
                 cout << fixed << elem.first << " : " << elem.second <<
-                    " : " << (int)round(100 * (elem.second - tm_start)) << endl;
+                    " : " << (int)round(1000 * (elem.second - tm_start)) << endl;
             }
     );
 }
