@@ -101,7 +101,7 @@ async_read()
              LOG_ERR(ec << " " << ec.message());
            return;
         }
-//        cout << &m_response;
+        cout << &m_response;
         async_read();
     };
 

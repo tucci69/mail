@@ -38,7 +38,7 @@ main(int argc, char **argv)
     char    str [INET_ADDRSTRLEN];
     struct  hostent *hptr;
 
-    char host[] ="82.165.27.2";
+    char host[] ="www.google.com";
 
     char sbuf[] =
         "GET / HTTP/1.1\r\n"
@@ -47,7 +47,7 @@ main(int argc, char **argv)
         "Accept: */*\r\n"
         "Connection: close\r\n\r\n";
  
-    char rbuf[4096]={0};
+    char rbuf[8192]={0};
 
     struct sockaddr_in servaddr;
     memset(&servaddr,0, sizeof(servaddr));
@@ -95,12 +95,11 @@ main(int argc, char **argv)
 
     bool first_byte = true;
 
-    while(recv(sockfd,rbuf,4096,0))
+    while(recv(sockfd, rbuf, 8192, 0))
     {
         tm_probe("received");
+        cout << rbuf;
     }
-
-    tm_probe("Context");
 
     double tm_start = tm_lst.begin()->second;
     for_each(tm_lst.begin(),tm_lst.end(),
